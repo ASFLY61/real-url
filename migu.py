@@ -32,27 +32,23 @@ class MiGu:
             url
         """
         headers = {
-            'appId': 'miguvideo',
-            'clientId': '',
-            'SDKCEId': '',
-            'terminalId': 'www',
-            'userId': '',
-            'userToken': '',
-            'X-UP-CLIENT-CHANNEL-ID': '',
+            
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                           'Chrome/95.0.4638.69 Safari/537.36',
             'Referer': 'https://www.miguvideo.com/',
         }
-        url = 'https://app-sc.miguvideo.com/vms-match/v3/staticcache/basic/basic-data/{}'.format(self.rid)
+        url = 'https://app-sc.miguvideo.com/vms-match/v5/staticcache/basic/basic-data/{}/miguvideo'.format(self.rid)
 
         with requests.Session() as session:
-            res = session.get(url, headers=headers).json()
+            res = session.get(url, headers=headers).json()          
         try:
+            
             contid = res['body']['pId']
             url = f'https://webapi.miguvideo.com/gateway/playurl/v3/play/playurl?contId={contid}&rateType={self.rate}'
             res = session.get(url, headers=headers).json()
             try:
                 playurl = res['body']['urlInfo']['url']
+                print(res['body']['urlInfo'])
                 real_url = self.calcu(playurl)
                 return real_url
             except KeyError:
