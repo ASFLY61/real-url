@@ -5,7 +5,7 @@
     "https-proxy-agent": "^5.0.1",
     "iconv-lite": "^0.6.3",
     "md5": "^2.3.0",
-    "node-fetch": "^2.6.7",
+    "node-fetch": "2.x",
     "pako": "^2.0.4",
     "qs": "^6.11.0",
     "to-arraybuffer": "^1.0.1",

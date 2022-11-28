@@ -1,4 +1,4 @@
-const { fireFetch, genUrlSearch, parseUrlSearch } = require("./utils/utils.js");
+const { fireFetch, genUrlSearch, parseUrlSearch, isJSONValid } = require("./utils/utils.js");
 const path = require("path");
 const fs = require("fs");
 /*
@@ -123,7 +123,8 @@ async function getUserInfo(uid) {
   const res = await fireFetch(
     `https://api.bilibili.com/x/space/acc/info?mid=${uid}`
   );
-  return res.code === 0 ? res.data || {} : {};
+  
+  return isJSONValid(res)?  JSON.parse(res).data : {} ;
 }
 
 //批量
@@ -163,10 +164,12 @@ const getYygRooms = async () => {
 /*getRoomLiveUrl(10375360).then((res) => {
   console.log(res);
 });*/
+//特定房间
+
 (async () => {
-  
-  const jsonList = [],
-    rooms = await getYygRooms();
+  const DEF_ROOMS=[{roomid:23125843,}]
+  const jsonList = [],dynamicRooms=await getYygRooms(),
+    rooms = [...DEF_ROOMS,...dynamicRooms];
   for (let i = 0; i < rooms.length; i++) {
     const room = rooms[i],
       key = room.roomid;
@@ -174,17 +177,20 @@ const getYygRooms = async () => {
 
     const json = await getRoomLiveUrl(key); // JSON.parse(out.replace(/\'/g, "\""))
     if (json.url1) {
+     
+      
       const user =
         room.uname && room.title ? { ...room } : await getUserInfo(json.uid);
 
       const uname = room.uname || user.name,
         rname = room.title || user?.live_room?.title;
       json.room_id = key;
-      json.name = `【${uname}】${rname}` || "未知名称";
+      json.name =uname||rname? `【${uname}】${rname}` : "未知名称";
       console.log("房间解析结果:", json);
       jsonList.push(json);
     }
   }
+  if (jsonList.length < 1) return;
   fs.writeFileSync(
     path.resolve(__dirname, `../data/bilibili.json`),
     JSON.stringify(jsonList)
