@@ -62,9 +62,9 @@ jobs:
         working-directory: ./nodejs
         run: node douyu-batch.js
 
-      - name: update huya
-        working-directory: ./nodejs
-        run: node huya-batch.js
+      #- name: update huya
+      #  working-directory: ./nodejs
+      #  run: node huya-batch.js
 
       - name: merge m3u files
         working-directory: ./nodejs
