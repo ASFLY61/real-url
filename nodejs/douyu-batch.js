@@ -14,10 +14,9 @@ const path = require("path");
  * 解析斗鱼 url
  * */
 const DOMAINS = [
+  "hdltc1.douyucdn.cn",
+  "hw-tct.douyucdn.cn",
   "hdltctwk.douyucdn2.cn",
-  "akm-tct.douyucdn.cn",
-  "tc-tct1.douyucdn.cn",
-  "vplay1a.douyucdn.cn",
 ];
 //获取房间真实id,等初始信息
 // 房间号通常为1~8位纯数字，浏览器地址栏中看到的房间号不一定是真实rid
