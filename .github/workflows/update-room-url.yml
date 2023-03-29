@@ -52,7 +52,7 @@ jobs:
       - name: install nodejs dependences
         working-directory: ./nodejs
         run: |
-          pnpm i
+          pnpm i  --no-frozen-lockfile
 
       - name: update bilibili
         working-directory: ./nodejs
