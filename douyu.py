@@ -49,7 +49,7 @@ class DouYu:
             'rid': self.rid,
             'did': self.did
         }
-        
+
         auth = DouYu.md5(self.rid + self.t13)
         headers = {
             'rid': self.rid,
@@ -127,19 +127,19 @@ class DouYu:
             raise Exception('房间未开播')
         else:
             key = self.get_js()
-            
+
         # 若key后缀存在_900等码率参数，可自行去掉
         real_url = {}
-        real_url["m3u8"] = "http://hdltctwk.douyucdn2.cn/live/{}.m3u8?uuid=".format(key)
+        real_url["m3u8"] = "http://hls1a-akm.douyucdn.cn/live/{}.m3u8?uuid=".format(key)
         real_url["flv"] = "http://hdltctwk.douyucdn2.cn/live/{}.flv?uuid=".format(key)
-        real_url["x-p2p"] = "http://hdltctwk.douyucdn2.cn/live/{}.xs?uuid=".format(key)
+        real_url["x-p2p"] = "http://hdltctwk.douyucdn.cn/live/{}.xs?uuid=".format(key)
         room_name=''#s.get_room_info()
         real_url["name"]=room_name
         return real_url
-    
 
-  
-                  
+
+
+
 
 if __name__ == '__main__':
     try:
@@ -152,9 +152,9 @@ if __name__ == '__main__':
         res=s.get_real_url()
         print(res)
     except Exception as e:
-        print(str(e)) 
-    
-      
-           
-    
-    
+        print(str(e))
+
+
+
+
+
