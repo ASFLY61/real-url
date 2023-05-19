@@ -23,7 +23,8 @@ const DOMAINS = [
   "hw-tct.douyucdn.cn",//failed
   "hdltc1.douyucdn.cn",//failed
   "akm-tct.douyucdn.cn",//failed
-];
+];const CUR_DOMAIN = DOMAINS[0];
+
 //获取房间真实id,等初始信息
 // 房间号通常为1~8位纯数字，浏览器地址栏中看到的房间号不一定是真实rid
 const getRoomRealId = async (rid) => {
@@ -99,60 +100,69 @@ async function getRoomPreviewInfo(rid) {
   return { error, key, initInfo };
 }
 
-//根据html文件提取func_ub9,并运行
-async function getUrlKey(initInfo) {
+//获取stream信息
+async function getRateStream(initInfo) {
   try {
     const query = initInfo?.query + "";
-    // console.log(query)
+    if (!query) return {};
+    // console.log(query);
     const url = "https://m.douyu.com/api/room/ratestream";
     const res = await fireFetch(
-      `${url}?${query}`,
-      {
-        method: "post",
-      },
-      true
+        `${url}?${query}`,
+        {
+          method: "post",
+        },
+        true
     );
 
     if (res.code !== 0) {
       console.log(res);
-      return "";
+      return {};
     }
-    const pUrl = res?.data?.url || "";
-    const key = pUrl.split("?").shift().split("/").pop().split(".").shift();
-    return key;
+
+    return res?.data || {};
   } catch (e) {
-    console.log(e, "get url key error");
-    return "";
+    console.log(e, "get getRateStream error");
+    return {};
   }
+}
+function getRKey(url = "") {
+  const pUrl = url || "";
+  return pUrl.split("?").shift().split("/").pop().split(".").shift();
 }
 
 //解析url
 const getRoomLiveUrls = async (rid) => {
   const prevInfo = await getRoomPreviewInfo(rid);
-
-  if (prevInfo.error !== 0) {
+  let data = await getRateStream(prevInfo.initInfo);
+  /* if (prevInfo.error !== 0) {
     if (prevInfo.error === 102) {
       console.log("房间不存在");
     } else if (prevInfo.error === 104) {
       console.log("房间未开播");
     } else {
-      // console.log('重新获取 url key')
-      prevInfo.key = await getUrlKey(prevInfo.initInfo);
-    }
-  }
-  let real_url = { room_id: rid };
-  if (prevInfo.key) {
-    const domain = DOMAINS[0],
-    //默认最高码率
-    key=prevInfo.key?.replace('_900','');
+      console.log("重新获取 url key");
 
-    real_url["m3u8"] = `https://${domain}/live/${key}.m3u8`;
-    real_url["flv"] = `https://${domain}/live/${key}.flv`;
-    real_url["x-p2p"] = `https://${domain}/live/${key}.xs`;
+
+      prevInfo.key = getRKey(data.url);
+    }
+  }*/
+  prevInfo.key = getRKey(data.url);
+  let real_url = { room_id: rid };
+  // console.log(liveUrlObj);
+  if (prevInfo.key) {  const liveUrlObj = new URL(data.url || `http://${CUR_DOMAIN}`);
+
+    const domain = CUR_DOMAIN,
+        //默认最高码率
+        key = prevInfo.key?.replace("_900", ""),
+        query = ""; //genUrlSearch(rPlQuery);
+
+    real_url["m3u8"] = `${liveUrlObj.origin}/live/${key}.m3u8`;
+    real_url["flv"] = `${liveUrlObj.origin}/live/${key}.flv`;
+    // real_url["x-p2p"] = `http://${domain}/live/${key}.xs?uuid=`;
   }
   return real_url;
 };
-
 /* getRoomLiveUrls(747764).then((res) => {
   console.log(res);
 }); */
@@ -191,8 +201,10 @@ const getLiveRooms = async () => {
   }
   return rooms;
 };
-
-(async () => {
+getRoomLiveUrls(431460).then((res) => {
+  console.log(res);
+});
+(async () => {return;
   const jsonList = [],
     rooms = await getLiveRooms();
   for (let i = 0; i < rooms.length; i++) {
