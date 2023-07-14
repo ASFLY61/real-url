@@ -134,12 +134,12 @@ class DouYu:
             raise Exception('房间未开播')
         #else:
             #key = self.get_js()
-
+        domain='openflv-huos.douyucdn2.cn'
         # 若key后缀存在_900等码率参数，可自行去掉
         real_url = {}
-        real_url["m3u8"] = "http://{}/live/{}.m3u8?uuid=".format(url_obj.netloc,key)
-        real_url["flv"] = "http://{}/live/{}.flv?uuid=".format(url_obj.netloc,key)
-        real_url["x-p2p"] = "http://{}/live/{}.xs?uuid=".format(url_obj.netloc,key)
+        real_url["m3u8"] = "http://{}/live/{}.m3u8?uuid=".format(domain,key)
+        real_url["flv"] = "http://{}/live/{}.flv?uuid=".format(domain,key)
+        real_url["x-p2p"] = "http://{}/live/{}.xs?uuid=".format(domain,key)
         room_name=''#s.get_room_info()
         real_url["name"]=room_name
         return real_url
