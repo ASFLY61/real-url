@@ -6,6 +6,7 @@ import time
 import sys
 import execjs
 import requests
+from urllib.parse import urlparse
 
 
 class DouYu:
@@ -49,7 +50,7 @@ class DouYu:
             'rid': self.rid,
             'did': self.did
         }
-        
+
         auth = DouYu.md5(self.rid + self.t13)
         headers = {
             'rid': self.rid,
@@ -83,10 +84,9 @@ class DouYu:
         params += '&ver=219032101&rid={}&rate=-1'.format(self.rid)
 
         url = 'https://m.douyu.com/api/room/ratestream'
-        res = self.s.post(url, params=params).text
-        key = re.search(r'(\d{1,8}[0-9a-zA-Z]+)_?\d{0,4}(.m3u8|/playlist)', res).group(1)
+        res = self.s.post(url, params=params).json()
 
-        return key
+        return res
 
     def get_pc_js(self, cdn='ws-h5', rate=0):
         """
@@ -119,27 +119,34 @@ class DouYu:
 
     def get_real_url(self):
         error, key = self.get_pre()
+        url = ''
+        url_obj = {}
         if error == 0:
-            pass
+            rateRes = self.get_js()
+            if rateRes['code']==0:
+               url = rateRes['data']['url']
+               key = re.search(r'(\d{1,8}[0-9a-zA-Z]+)_?\d{0,4}(.m3u8|/playlist)', url).group(1)
+               url_obj = urlparse(url)
+
         elif error == 102:
             raise Exception('房间不存在')
         elif error == 104:
             raise Exception('房间未开播')
-        else:
-            key = self.get_js()
-            
+        #else:
+            #key = self.get_js()
+        domain='openflv-huos.douyucdn2.cn'
         # 若key后缀存在_900等码率参数，可自行去掉
         real_url = {}
-        real_url["m3u8"] = "http://hdltctwk.douyucdn2.cn/live/{}.m3u8?uuid=".format(key)
-        real_url["flv"] = "http://hdltctwk.douyucdn2.cn/live/{}.flv?uuid=".format(key)
-        real_url["x-p2p"] = "http://hdltctwk.douyucdn2.cn/live/{}.xs?uuid=".format(key)
+        real_url["m3u8"] = "http://{}/live/{}.m3u8?uuid=".format(domain,key)
+        real_url["flv"] = "http://{}/live/{}.flv?uuid=".format(domain,key)
+        real_url["x-p2p"] = "http://{}/live/{}.xs?uuid=".format(domain,key)
         room_name=''#s.get_room_info()
         real_url["name"]=room_name
         return real_url
-    
 
-  
-                  
+
+
+
 
 if __name__ == '__main__':
     try:
@@ -152,9 +159,9 @@ if __name__ == '__main__':
         res=s.get_real_url()
         print(res)
     except Exception as e:
-        print(str(e)) 
-    
-      
-           
-    
-    
+        print(str(e))
+
+
+
+
+

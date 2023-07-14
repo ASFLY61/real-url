@@ -1,12 +1,12 @@
 # 自用自改
 
-- 使用`Node.js`动态获取分区房间列表: douyu、bilibili、huya
+- ~~使用`Node.js`动态获取分区房间列表: douyu、bilibili、huya~~ 该仓库的js版不再更新，请查看[ql-scripts](https://github.com/moxun33/ql-scripts)更新
 
 - 批量获取直播URL，添加房间名称、主播名称
 - 生成m3u文件
 - 修改部分`python`脚本
 - ~~在`Node.js`调用`python`脚本~~
-- `douyu、bilibili、huya`使用`js`解析
+- ~~`douyu、bilibili、huya`使用`js`解析~~ 
 - 欢迎使用[vvibe](https://github.com/moxun33/vvibe)直播播放器
 
 # 免责声明：本仓库的m3u文件和js代码仅供学习交流使用，不得用于任何商业用途，数据来源于互联网公开内容，没有获取任何私有和有权限的信息（个人信息等）。由此引发的任何法律纠纷与本人无关

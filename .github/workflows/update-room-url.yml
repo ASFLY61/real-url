@@ -8,7 +8,7 @@ on:
   #push:
   #  branches: [ master ]
   #schedule:
-  #  - cron: '0 10 * * *'
+  #- cron: '0 12 * * *'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -52,7 +52,7 @@ jobs:
       - name: install nodejs dependences
         working-directory: ./nodejs
         run: |
-          pnpm i
+          pnpm i  --no-frozen-lockfile
 
       - name: update bilibili
         working-directory: ./nodejs
@@ -62,9 +62,9 @@ jobs:
         working-directory: ./nodejs
         run: node douyu-batch.js
 
-      - name: update huya
-        working-directory: ./nodejs
-        run: node huya-batch.js
+      #- name: update huya
+      #  working-directory: ./nodejs
+      #  run: node huya-batch.js
 
       - name: merge m3u files
         working-directory: ./nodejs
